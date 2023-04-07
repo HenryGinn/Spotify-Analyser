@@ -1,9 +1,12 @@
 import os
 import sys
 
+from Main.Authenticate import Authenticate
 from Utils.PathManagement import make_folder
 
 class Spotify():
+
+    spotify_keys_file_name = "Spotify API Keys"
 
     def __init__(self, user_id, name=None):
         self.user_id = user_id
@@ -28,3 +31,7 @@ class Spotify():
     def create_user_results_folder(self):
         self.user_results_path = os.path.join(self.parent_results_path, self.name)
         make_folder(self.user_results_path, message=True)
+
+    def authenticate(self):
+        self.authenticate_obj = Authenticate(self)
+        self.authenticate_obj.authenticate()
