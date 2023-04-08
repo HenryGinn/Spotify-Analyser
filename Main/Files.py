@@ -57,13 +57,20 @@ class Files():
     def split_file(self, file_name):
         print(f"Processing {file_name}")
         file_contents = self.get_file_contents(file_name)
+        file_contents = self.remove_invalid_tracks(file_contents)
         group_indexes = self.get_group_indexes(file_contents.size)
         self.construct_new_files(file_contents, group_indexes)
 
     def get_file_contents(self, file_name):
         file_path = os.path.join(self.original_data_path, file_name)
         with open(file_path, "r") as file:
-            file_contents = np.array(json.load(file))
+            file_contents = json.load(file)
+        return file_contents
+
+    def remove_invalid_tracks(self, file_contents):
+        file_contents = [contents for contents in file_contents
+                         if contents["master_metadata_track_name"] is not None]
+        file_contents = np.array(file_contents)
         return file_contents
 
     def get_group_indexes(self, song_count):
