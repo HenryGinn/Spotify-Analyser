@@ -2,8 +2,8 @@ import os
 import sys
 
 from Main.Authenticate import Authenticate
-from Main.Statistics import Statistics
 from Main.Files import Files
+from Statistics.Children.TimeListened import TimeListened
 from Utils.PathManagement import make_folder
 
 class Spotify():
@@ -27,11 +27,17 @@ class Spotify():
     def preprocess_files(self):
         self.files_obj = Files(self)
         self.files_obj.preprocess_files()
+        self.data_path = self.files_obj.path
 
     def authenticate(self, **kwargs):
         self.authenticate_obj = Authenticate(self)
         self.authenticate_obj.authenticate(kwargs)
 
     def produce_statistics(self):
-        self.statistics_obj = Statistics(self)
-        self.statistics_obj.do_something()
+        self.set_statistics_list()
+        for statistic_class in self.statistic_class_list:
+            statistic_obj = statistic_class(self)
+            statistic_obj.produce_statistics()
+
+    def set_statistics_list(self):
+        self.statistic_class_list = [TimeListened]
