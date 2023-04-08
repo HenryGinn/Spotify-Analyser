@@ -1,4 +1,6 @@
 from Main.Spotify import Spotify
 
-spotify = Spotify("pvx1ifaja52xrpt925t822wsj", "Henry")
+spotify = Spotify()
+spotify.preprocess_files()
 spotify.authenticate()
+spotify.produce_statistics()

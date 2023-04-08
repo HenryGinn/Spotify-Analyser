@@ -2,16 +2,41 @@ import os
 import sys
 
 import spotipy
-from spotipy.oauth2 import SpotifyClientCredentials
+from spotipy.oauth2 import SpotifyOAuth
 
 class Authenticate():
 
     def __init__(self, spotify_obj):
         self.spotify_obj = spotify_obj
+        self.load_default_settings()
 
-    def authenticate(self):
+    def load_default_settings(self):
+        path = os.path.join(self.spotify_obj.default_settings_path,
+                            f"{type(self).__name__}")
+        with open(path, "r") as file:
+            self.set_default_settings_from_file(file)
+
+    def set_default_settings_from_file(self, file):
+        for line in file:
+            setting_name, setting_value = line.strip().split("=")
+            setattr(self, setting_name, setting_value)
+
+    def authenticate(self, kwargs):
+        self.process_kwargs(kwargs)
         self.set_client_keys()
-        self.do_something()
+        self.set_redirect_uri()
+
+    def process_kwargs(self, kwargs):
+        self.kwargs = kwargs
+        self.process_redirect_uri_kwarg()
+
+    def process_redirect_uri_kwarg(self):
+        if "redirect_uri" in self.kwargs:
+            if self.kwargs["redirect_uri"] is not None:
+                self.redirect_uri = self.kwargs["redirect_uri"]
+
+    def output_authentification_kwargs(self):
+        print(["redirect_uri"])
 
     def set_client_keys(self):
         path = os.path.join(self.spotify_obj.repository_path,
@@ -52,12 +77,6 @@ class Authenticate():
             key_name, key_value = key_name_value_pair
             os.environ[key_name] = key_value
 
-    def do_something(self):
-        spotify = spotipy.Spotify(auth_manager=SpotifyClientCredentials())
-        name = "Coldplay"
-        results = spotify.search(q='artist:' + name, type='artist')
-        items = results['artists']['items']
-        if len(items) > 0:
-            artist = items[0]
-            print(artist['name'], artist['images'][0]['url'])
+    def set_redirect_uri(self):
+        os.environ["SPOTIPY_REDIRECT_URI"] = self.redirect_uri
 
