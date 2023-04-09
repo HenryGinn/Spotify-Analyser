@@ -8,11 +8,9 @@ class TimeListenedFine(StatisticRangeFine):
     increment = 1
     units = " (s)"
 
-    def process_file_contents(self, file_contents):
-        for track in file_contents:
-            if track["skipped"] is False:
-                length = track["ms_played"] / 1000
-                self.add_to_results_dict(length)
+    def process_track(self, track):
+        length = track["ms_played"] / 1000
+        self.add_to_results_dict(length)
 
     def post_process_results(self):
         values = list(self.results_dict.values())

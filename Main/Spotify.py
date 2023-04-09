@@ -5,6 +5,7 @@ from Main.Authenticate import Authenticate
 from Main.Files import Files
 from Statistics.Children.TimeListened import TimeListened
 from Statistics.Children.TimeListenedFine import TimeListenedFine
+from Statistics.Children.TimeOfDay import TimeOfDay
 from Utils.PathManagement import make_folder
 
 class Spotify():
@@ -37,8 +38,17 @@ class Spotify():
     def produce_statistics(self):
         self.set_statistics_list()
         for statistic_class in self.statistic_class_list:
-            statistic_obj = statistic_class(self)
-            statistic_obj.produce_statistics()
+            self.produce_statistic(statistic_class)
 
     def set_statistics_list(self):
-        self.statistic_class_list = [TimeListened, TimeListenedFine]
+        self.statistic_class_list = [TimeListened, TimeListenedFine,
+                                     TimeOfDay]
+
+    def produce_statistic(self, statistic_class):
+        statistic_obj = statistic_class(self)
+        statistic_obj.produce_statistics()
+
+    def produce_statistic_last(self):
+        self.set_statistics_list()
+        statistic_class = self.statistic_class_list[-1]
+        self.produce_statistic(statistic_class)

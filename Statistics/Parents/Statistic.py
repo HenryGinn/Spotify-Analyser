@@ -40,7 +40,15 @@ class Statistic():
         self.process_file_contents(file_contents)
 
     def process_file_contents(self, file_contents):
-        raise AttributeError(f"'{self.name}' has no method 'process_file_contents'")
+        for track in file_contents:
+            if self.track_valid(track):
+                self.process_track(track)
+
+    def track_valid(self, track):
+        not_skipped = (not track["skipped"])
+        not_unknown = (track["master_metadata_track_name"] != None)
+        valid = not_skipped and not_unknown
+        return valid
 
     def post_process_results(self):
         pass

@@ -23,6 +23,7 @@ Parent Folder
     Spotify-Analyser
     Results (created automatically by the program)
     Spotify API Keys.txt
+    Data
 
 The contents of "Spotify API Keys.txt" should look like this:
 
@@ -40,3 +41,4 @@ TimeListened is a simple example. It records the number of times you have listen
 Outputting the data to a text file is handled by a function in the Strings script in Utils. It takes in a dictionary and outputs the data in aligned columns.
 
 ## To Do
+

@@ -23,7 +23,7 @@ class StatisticRangeFine(StatisticRange):
 
     def plot_results(self):
         self.fig, self.ax = plt.subplots()
-        x_values = self.ends[:-1]
+        x_values = list(self.results_dict.keys())[:-1]
         y_values = list(self.results_dict.values())[:-1]
         self.ax.plot(x_values, y_values)
         self.set_labels()
@@ -32,4 +32,9 @@ class StatisticRangeFine(StatisticRange):
     def set_labels(self):
         self.fig.suptitle(self.name)
         self.ax.xlabel = f"{self.name}{self.units}"
+        self.set_x_limits()
         #plt.xticks(rotation=60, ha="right")
+
+    def set_x_limits(self):
+        if hasattr(self, "x_limits"):
+            plt.xlim(self.x_limits)
