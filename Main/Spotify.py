@@ -3,6 +3,7 @@ import sys
 
 from Main.Authenticate import Authenticate
 from Main.Files import Files
+from Main.Tracks import Tracks
 from Statistics.Children.TimeListened import TimeListened
 from Statistics.Children.TimeListenedFine import TimeListenedFine
 from Statistics.Children.TimeOfDay import TimeOfDay
@@ -30,6 +31,10 @@ class Spotify():
         self.files_obj = Files(self)
         self.files_obj.preprocess_files()
         self.data_path = self.files_obj.path
+
+    def set_unique_track_list(self):
+        self.tracks_obj = Tracks(self)
+        self.tracks_obj.load()
 
     def authenticate(self, **kwargs):
         self.authenticate_obj = Authenticate(self)
