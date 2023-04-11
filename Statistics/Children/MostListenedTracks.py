@@ -4,6 +4,7 @@ from Utils.Strings import save_file_contents_to_file
 class MostListenedTracks(StatisticTrackRank):
 
     name = "Most Listened Tracks"
+    column_name = "Times Listened"
     
     def process_track(self, track):
         name = track["master_metadata_track_name"]
