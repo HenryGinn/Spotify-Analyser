@@ -7,6 +7,7 @@ from Main.Tracks import Tracks
 from Statistics.Children.TimeListened import TimeListened
 from Statistics.Children.TimeListenedFine import TimeListenedFine
 from Statistics.Children.TimeOfDay import TimeOfDay
+from Statistics.Children.MostListenedTracks import MostListenedTracks
 from Utils.PathManagement import make_folder
 
 class Spotify():
@@ -47,7 +48,7 @@ class Spotify():
 
     def set_statistics_list(self):
         self.statistic_class_list = [TimeListened, TimeListenedFine,
-                                     TimeOfDay]
+                                     TimeOfDay, MostListenedTracks]
 
     def produce_statistic(self, statistic_class):
         statistic_obj = statistic_class(self)
