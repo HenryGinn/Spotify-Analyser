@@ -3,5 +3,5 @@ from Main.Spotify import Spotify
 spotify = Spotify()
 spotify.preprocess_files()
 spotify.set_unique_track_list()
-#spotify.authenticate()
+spotify.authenticate()
 spotify.produce_statistic_last()

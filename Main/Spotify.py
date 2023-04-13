@@ -1,9 +1,10 @@
 import os
 import sys
 
-from Main.Authenticate import Authenticate
 from Main.Files import Files
 from Main.Tracks import Tracks
+from Authenticate.AuthenticateSpotify import AuthenticateSpotify
+from Authenticate.AuthenticateGoogle import AuthenticateGoogle
 from Statistics.Children.TimeListened import TimeListened
 from Statistics.Children.TimeListenedFine import TimeListenedFine
 from Statistics.Children.TimeOfDay import TimeOfDay
@@ -14,6 +15,7 @@ from Utils.PathManagement import make_folder
 class Spotify():
 
     spotify_keys_file_name = "Spotify API Keys"
+    google_keys_file_name = "Google Sheets API Keys.json"
 
     def __init__(self):
         self.create_results_folder()
@@ -39,8 +41,16 @@ class Spotify():
         self.tracks_obj.load()
 
     def authenticate(self, **kwargs):
-        self.authenticate_obj = Authenticate(self)
-        self.authenticate_obj.authenticate(kwargs)
+        self.authenticate_spotify(kwargs)
+        self.authenticate_google(kwargs)
+
+    def authenticate_spotify(self, kwargs):
+        self.authenticate_spotify_obj = AuthenticateSpotify(self)
+        self.authenticate_spotify_obj.authenticate(kwargs)
+
+    def authenticate_google(self, kwargs):
+        self.authenticate_google_obj = AuthenticateGoogle(self)
+        self.authenticate_google_obj.authenticate(kwargs)
 
     def produce_statistics(self):
         self.set_statistics_list()

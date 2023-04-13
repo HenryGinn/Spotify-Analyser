@@ -4,7 +4,7 @@ import sys
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
 
-class Authenticate():
+class AuthenticateSpotify():
 
     def __init__(self, spotify_obj):
         self.spotify_obj = spotify_obj
@@ -79,4 +79,3 @@ class Authenticate():
 
     def set_redirect_uri(self):
         os.environ["SPOTIPY_REDIRECT_URI"] = self.redirect_uri
-
