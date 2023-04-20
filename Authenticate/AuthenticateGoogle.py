@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os.path
+import json
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -76,11 +77,11 @@ class AuthenticateGoogle():
 
     def save_credentials(self):
         with open(self.token_path, 'w') as token:
-            token.write(self.credentials.to_json())    
+            json.dump(self.credentials.to_json(), token, indent=2)    
 
     def do_something_example(self):
         try:
-            service = build('sheets', 'v4', credentials=self.creds)
+            service = build('sheets', 'v4', credentials=self.credentials)
 
             # Call the Sheets API
             sheet = service.spreadsheets()

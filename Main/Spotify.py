@@ -65,7 +65,7 @@ class Spotify():
     def authenticate_google(self, kwargs):
         self.authenticate_google_obj = AuthenticateGoogle(self)
         self.authenticate_google_obj.authenticate(kwargs)
-        self.authenticate_google_obj.do_something()
+        self.authenticate_google_obj.do_something_example()
 
     def produce_statistics(self):
         self.set_statistics_list()
