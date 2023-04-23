@@ -1,6 +1,7 @@
 from __future__ import print_function
 
 import os.path
+import json
 
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -12,8 +13,6 @@ class AuthenticateGoogle():
 
     # If modifying these scopes, delete the file token.json.
     SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-
-    # The ID and range of a sample spreadsheet.
     SAMPLE_SPREADSHEET_ID = '1BxiMVs0XRA5nFMdKvBdBZjgmUUqptlbs74OgvE2upms'
     SAMPLE_RANGE_NAME = 'Class Data!A2:E'
 
@@ -21,32 +20,68 @@ class AuthenticateGoogle():
         self.spotify_obj = spotify_obj
 
     def authenticate(self, kwargs):
+        self.set_token_path()
+        self.attempt_set_credentials_from_file()
+        self.attempt_set_credentials_from_user()
 
-        """Shows basic usage of the Sheets API.
-        Prints values from a sample spreadsheet.
-        """
-        creds = None
-        # The file token.json stores the user's access and refresh tokens, and is
-        # created automatically when the authorization flow completes for the first
-        # time.
-        if os.path.exists('token.json'):
-            creds = Credentials.from_authorized_user_file('token.json', self.SCOPES)
-        # If there are no (valid) credentials available, let the user log in.
-        if not creds or not creds.valid:
-            if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
-            else:
-                credentials_path = os.path.join(self.spotify_obj.repository_path,
-                            self.spotify_obj.google_keys_file_name)
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    credentials_path, self.SCOPES)
-                creds = flow.run_local_server(port=0)
-            # Save the credentials for the next run
-            with open('token.json', 'w') as token:
-                token.write(creds.to_json())
+    def set_token_path(self):
+        self.token_path = os.path.join(
+            self.spotify_obj.authorisation_path,
+            self.spotify_obj.google_token_file_name)
 
+    def attempt_set_credentials_from_file(self):
+        if os.path.exists(self.token_path):
+            self.set_credentials_from_file()
+        else:
+            self.credentials = None
+
+    def set_credentials_from_file(self):
+        self.credentials = Credentials.from_authorized_user_file(
+            self.token_path, self.SCOPES)
+
+    def attempt_set_credentials_from_user(self):
+        if self.need_credentials_from_user():
+            self.set_credentials_from_user()
+            self.save_credentials()
+
+    def need_credentials_from_user(self):
+        if self.credentials is None:
+            return True
+        else:
+            return not self.credentials.valid
+
+    def set_credentials_from_user(self):
+        if self.need_to_refresh_credentials():
+            self.refresh_credentials()
+        else:
+            self.generate_credentials()
+
+    def need_to_refresh_credentials(self):
+        return (self.credentials
+                and self.credentials.expired
+                and credentials.refresh_token)
+
+    def refresh_credentials(self):
+        self.credentials.refresh(Request())
+
+    def generate_credentials(self):
+        credentials_path = self.get_credentials_path()
+        flow = InstalledAppFlow.from_client_secrets_file(
+            credentials_path, self.SCOPES)
+        self.credentials = flow.run_local_server(port=0)
+
+    def get_credentials_path(self):
+        credentials_path = os.path.join(self.spotify_obj.authorisation_path,
+                                        self.spotify_obj.google_keys_file_name)
+        return credentials_path
+
+    def save_credentials(self):
+        with open(self.token_path, 'w') as token:
+            json.dump(self.credentials.to_json(), token, indent=2)    
+
+    def do_something_example(self):
         try:
-            service = build('sheets', 'v4', credentials=creds)
+            service = build('sheets', 'v4', credentials=self.credentials)
 
             # Call the Sheets API
             sheet = service.spreadsheets()

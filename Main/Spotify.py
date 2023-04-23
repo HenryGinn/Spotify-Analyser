@@ -14,22 +14,36 @@ from Utils.PathManagement import make_folder
 
 class Spotify():
 
-    spotify_keys_file_name = "Spotify API Keys"
+    spotify_keys_file_name = "Spotify API Keys.json"
     google_keys_file_name = "Google Sheets API Keys.json"
+    google_token_file_name = "Google Token.json"
 
     def __init__(self):
+        self.setup_paths()
         self.create_results_folder()
+        self.set_other_paths()
+        self.set_authorisation_path()
         self.set_default_settings_path()
 
-    def create_results_folder(self):
+    def setup_paths(self):
         self.script_path = sys.path[0]
         self.repository_path = os.path.dirname(self.script_path)
+
+    def create_results_folder(self):
         self.results_path = os.path.join(self.repository_path, "Results")
         make_folder(self.results_path, message=True)
+
+    def set_other_paths(self):
+        self.set_default_settings_path()
+        self.set_authorisation_path()
 
     def set_default_settings_path(self):
         self.default_settings_path = os.path.join(self.script_path,
                                                   "Default Settings")
+
+    def set_authorisation_path(self):
+        self.authorisation_path = os.path.join(self.repository_path,
+                                               "Authorisation Tokens and Keys")
 
     def preprocess_files(self):
         self.files_obj = Files(self)
@@ -51,6 +65,7 @@ class Spotify():
     def authenticate_google(self, kwargs):
         self.authenticate_google_obj = AuthenticateGoogle(self)
         self.authenticate_google_obj.authenticate(kwargs)
+        self.authenticate_google_obj.do_something_example()
 
     def produce_statistics(self):
         self.set_statistics_list()

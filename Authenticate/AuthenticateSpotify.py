@@ -1,5 +1,6 @@
 import os
 import sys
+import json
 
 import spotipy
 from spotipy.oauth2 import SpotifyOAuth
@@ -39,7 +40,7 @@ class AuthenticateSpotify():
         print(["redirect_uri"])
 
     def set_client_keys(self):
-        path = os.path.join(self.spotify_obj.repository_path,
+        path = os.path.join(self.spotify_obj.authorisation_path,
                             self.spotify_obj.spotify_keys_file_name)
         with open(path, "r") as file:
             self.get_keys_from_file(file)
@@ -55,15 +56,14 @@ class AuthenticateSpotify():
             self.exception_extract_keys_from_file(file)
 
     def do_read_keys_from_file(self, file):
-        keys = [line.strip().split("=")
-                    for line in file]
+        keys = json.load(file)
         return keys
 
     def exception_extract_keys_from_file(self, file):
         exception_message = (f"Could not extract API keys from {file.name}\n"
                              "Ensure file is of the following format:\n"
-                             "SPOTIFY_CLIENT_ID=\"Your client id\"\n"
-                             "SPOTIFY_CLIENT_SECRET=\"Your client secret\"")
+                             "\{\"SPOTIFY_CLIENT_ID\": \"Your client id\"\n"
+                             "\"SPOTIFY_CLIENT_SECRET\": \"Your client secret\"\}")
         raise Exception(exception_message)
 
     def set_keys_from_file_keys(self, keys):
@@ -73,8 +73,7 @@ class AuthenticateSpotify():
             raise Exception(f"Could not extract two keys from the following list:\n{keys}")
 
     def set_keys_as_environment_variables(self, keys):
-        for key_name_value_pair in keys:
-            key_name, key_value = key_name_value_pair
+        for key_name, key_value in keys.items():
             os.environ[key_name] = key_value
 
     def set_redirect_uri(self):
