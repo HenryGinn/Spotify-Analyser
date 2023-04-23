@@ -8,7 +8,7 @@ from Utils.PathManagement import make_folder
 
 class Files():
 
-    data_folder_name = "my_spotify_data"
+    data_folder_name = "my_extended_spotify_data"
     songs_per_file = 250
 
     def __init__(self, spotify_obj):
